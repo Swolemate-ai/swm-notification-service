@@ -1,4 +1,5 @@
 import { Options } from 'amqplib';
+import { KafkaConfig } from 'kafkajs';
 
 export const MESSAGING_CONFIG: Options.Connect = {
   protocol: 'amqp',
@@ -37,3 +38,14 @@ export const QUEUES = {
 //       topic: process.env.KAFKA_TOPIC || 'task-events',
 //     },
 //   };
+
+export const kafkaConfig = {
+  clientId: 'swolemate-notification-service',
+  brokers: [process.env.CONFLUENT_BOOTSTRAP_SERVERS!],
+  ssl: true,
+  sasl: {
+    mechanism: 'plain',
+    username: process.env.CONFLUENT_API_KEY!,
+    password: process.env.CONFLUENT_API_SECRET!
+  },
+};

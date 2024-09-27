@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export const APP_CONFIG = {
-  port: parseInt(process.env.PORT || '3000', 10),
+  port: parseInt(process.env.PORT || '8082', 10),
   environment: process.env.NODE_ENV || 'development',
   mongoUri: process.env.MONGODB_URI || 'mongodb://localhost:27017/taskmanagement',
   jwtSecret: process.env.JWT_SECRET || 'your-secret-key',

@@ -2,7 +2,6 @@
 
 import winston from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
-import { APP_CONFIG } from '../config/app';
 import { OBSERVABILITY_CONFIG } from '../config/observability';
 
 // Define log levels
