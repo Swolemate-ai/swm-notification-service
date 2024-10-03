@@ -43,6 +43,10 @@ export class UserService {
 
   async updateUserFCMToken(userId: string, token: string): Promise<User | undefined> {
     const userRef = this.firestore.collection('users').doc(userId);
+    if (!userRef) {
+      logger.error(`User not found: ${userId}`);
+      return undefined;
+    }
     await userRef.update({
       fcmTokens: admin.firestore.FieldValue.arrayUnion(token),
       updatedAt: admin.firestore.FieldValue.serverTimestamp()
