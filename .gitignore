@@ -23,6 +23,7 @@ lib-cov
 coverage
 *.lcov
 
+
 # nyc test coverage
 .nyc_output
 
@@ -131,3 +132,4 @@ dist
 evolved-project-structure.txt
 typescript-revised-project-structure.txt
 swolemate-app-efb05-*.json
+stage-env.yaml
