@@ -8,16 +8,13 @@ WORKDIR /src
 COPY package*.json ./
 
 # Install dependencies
-RUN npm ci --only=production
+RUN npm install
 
 # Copy the rest of the application code
 COPY . .
 
 # Build the TypeScript code
 RUN npm run build
-
-# Remove dev dependencies
-RUN npm prune --production
 
 # Expose the port the app runs on
 EXPOSE ${PORT}
