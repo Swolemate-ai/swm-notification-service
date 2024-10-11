@@ -13,7 +13,7 @@ import { errorMiddleware } from './cross_cutting/error_handling';
 import { corsMiddleware } from './interfaces/http/middlewares/cors_middleware';
 import { ConfluentCloudEngine } from './infrastructure/messaging/kafka/ConfluentCloudEngine';
 import { ConfluentCloudConsumer } from './infrastructure/messaging/ConfluentCloudConsumer';
-import { not } from 'joi';
+
 
 class Server {
   private app: express.Application;
