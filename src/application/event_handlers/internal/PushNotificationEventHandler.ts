@@ -2,8 +2,8 @@ import { inject, injectable } from "tsyringe";
 import { InternalEventDefinition, InternalNotificationEvent, InternalNotificationEventHandler } from "../../../domain/notification/NotificationEvent";
 import { NotificationService } from "../../notification/service";
 import { UserService } from "../../user/services/UserService";
-import { FCMService } from "../../fcm_service";
 import { logger } from "../../../cross_cutting/logging";
+import { PushNotificationService } from "../../PushNotificationService";
 
 
 @injectable()
@@ -13,7 +13,7 @@ export class PushNotificationRequestHandler implements InternalNotificationEvent
     constructor(
         @inject(NotificationService) private notificationService: NotificationService,
         @inject(UserService)private userService: UserService,
-        @inject(FCMService) private fcmService: FCMService) {}
+        @inject('PushNotificationService') private pushNotificationService: PushNotificationService) {}
 
     async handle(event: InternalNotificationEvent): Promise<void> {
         // Grab notification details from the event and send email
@@ -39,7 +39,7 @@ export class PushNotificationRequestHandler implements InternalNotificationEvent
             return;
         }
         for (const token of user.fcmTokens) {
-            await this.fcmService.sendNotificationToToken(notification, token);
+            await this.pushNotificationService.sendNotificationToToken(notification, token);
         }
         
         // await new Promise(resolve => setTimeout(resolve, 100));

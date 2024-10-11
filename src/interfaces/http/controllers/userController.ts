@@ -38,9 +38,10 @@ export class UserController {
   updateUserFCMToken = async (req: Request, res: Response): Promise<void> => {
     try {
       const { userId, token } = req.body;
-      const updatedUser = await this.userService.updateUserFCMToken(userId, token);
+      const profile = req.userProfile;
+      const updatedUser = await this.userService.updateUserFCMToken(profile.id, token);
       if (updatedUser) {
-        res.status(200).json(updatedUser);
+        res.status(200).json({ message: 'FCM token updated' });
       } else {
         res.status(404).json({ error: 'User not found' });
       }

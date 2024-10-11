@@ -1,11 +1,13 @@
 import * as admin from 'firebase-admin';
-import { Notification } from '../domain/notification';
-import { logger } from '../cross_cutting/logging';
+import { Notification } from '../../domain/notification';
 import { inject, injectable } from 'tsyringe';
+import { logger } from '../../cross_cutting/logging';
+import { ExternalPublishingService } from '../../application/ExternalPublishingService';
+import { PushNotificationService } from '../../application/PushNotificationService';
 
 
 @injectable()
-export class FCMService {
+export class FCMService implements PushNotificationService, ExternalPublishingService {
   constructor(@inject("FirebaseApp") private firebaseApp: admin.app.App) {}
 
   async sendNotificationToToken(notification: Notification, token: string): Promise<string> {

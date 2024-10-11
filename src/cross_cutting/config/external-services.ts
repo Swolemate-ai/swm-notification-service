@@ -22,4 +22,7 @@ export const EXTERNAL_SERVICES_CONFIG = {
         bucket: process.env.AWS_S3_BUCKET,
       },
     },
+    profileService:{
+      url: process.env.PROFILE_SERVICE_URL || 'http://localhost:8081',
+    }
   };

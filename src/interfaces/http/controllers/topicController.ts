@@ -1,16 +1,17 @@
 import { Request, Response } from 'express';
 import { inject, injectable } from 'tsyringe';
 import { TopicService } from '../../../application/topic/services/TopicService';
-import { FCMService } from '../../../application/fcm_service';
+// import { FCMService } from '../../../application/fcm_service';
 import { Topic } from '../../../domain/topic';
 import { logger } from '../../../cross_cutting/logging';
+import { ExternalPublishingService } from '../../../application/ExternalPublishingService';
 
 
 @injectable()
 export class TopicController {
   constructor(
     @inject(TopicService) private topicService: TopicService,
-    @inject(FCMService) private fcmService: FCMService
+    @inject('ExternalPublishingService') private publishingService: ExternalPublishingService
   ) {}
 
 
@@ -49,7 +50,7 @@ export class TopicController {
         return;
       }
 
-      await this.fcmService.subscribeToTopic(tokens, topic.name);
+      await this.publishingService.subscribeToTopic(tokens, topic.name);
       await this.topicService.incrementSubscriberCount(topicId);
 
       res.status(200).json({ message: 'Successfully subscribed to topic' });

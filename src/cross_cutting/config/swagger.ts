@@ -7,7 +7,7 @@ const options: swaggerJsdoc.Options = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'Microservices API',
+      title: 'User Notifications Services API',
       version,
       description: 'API documentation for Microservice Application',
     },
@@ -25,7 +25,7 @@ const swaggerSpec = swaggerJsdoc(options);
 
 export const swaggerUiOptions: SwaggerUiOptions = {
   // customCss: '.swagger-ui .topbar { display: none }',
-  customSiteTitle: "Microservices API Documentation",
+  customSiteTitle: "User Notifications API Documentation",
   customfavIcon: "/public/favicon.ico",
   swaggerOptions: {
     defaultModelsExpandDepth: -1, // Hide schemas section by default

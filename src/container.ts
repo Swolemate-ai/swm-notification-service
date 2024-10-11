@@ -6,7 +6,6 @@ import { IFileStorageService } from './infrastructure/external-services/contract
 import { S3FileStorageService } from './infrastructure/external-services/implementations/S3FileStorageService';
 import { GCSFileStorageService } from './infrastructure/external-services/implementations/GCFileStorageService';
 import { initializeFirebase } from './cross_cutting/config';
-import { FCMService } from './application/fcm_service';
 import { UserService } from './application/user/services/UserService';
 import { TopicService } from './application/topic/services/TopicService';
 import { NotificationController } from './interfaces/http/controllers/notificationController';
@@ -22,6 +21,17 @@ import { ProfileCreatedEventHandler } from './application/event_handlers/externa
 import { EmailNotificationRequestHandler } from './application/event_handlers/internal/EmailNotificationRequestHandler';
 import { IEmailService } from './application/contracts/IEmailService';
 import { SendGridEmailService } from './infrastructure/messaging/sendgrid/SendGridEmailService';
+import { GetProfileUseCase } from './application/profile/GetProfileUseCase';
+import { ProfileService } from './application/profile/ProfileService';
+import { ProfileServiceImpl } from './infrastructure/external-services/ProfileServiceImpl';
+import { UserRepository } from './domain/user/UserRepository';
+import { FirebaseUserRepository } from './infrastructure/persistence/firebase/FirebaseUserRepository';
+import { NotificationRepository } from './domain/notification';
+import { FirebaseNotificationRepository } from './infrastructure/persistence/firebase/FirebaseNotificationRepository';
+import { register } from 'module';
+import { PushNotificationService } from './application/PushNotificationService';
+import { FCMService } from './infrastructure/messaging/FCMService';
+import { ExternalPublishingService } from './application/ExternalPublishingService';
 
 // Choose which implementation to use
 // container.registerSingleton<IFileStorageService>('IFileStorageService', S3FileStorageService);
@@ -35,16 +45,17 @@ import { SendGridEmailService } from './infrastructure/messaging/sendgrid/SendGr
 
 // Register services
 // container.registerSingleton<UserService>(UserService);
-
+container.register<ProfileService>('ProfileService', { useClass: ProfileServiceImpl });
 
 // Register use cases
-
+container.registerSingleton<GetProfileUseCase>(GetProfileUseCase);
 
 // Register controllers
 
 const firebaseApp = initializeFirebase();
 container.register("FirebaseApp", { useValue: firebaseApp });
-
+container.registerSingleton<UserRepository>('UserRepository', FirebaseUserRepository);
+container.registerSingleton<NotificationRepository>('NotificationRepository', FirebaseNotificationRepository);
 // Initialize ConfluentCloudEngine
 const confluentCloudEngine = ConfluentCloudEngine.getInstance();
 container.registerInstance(ConfluentCloudEngine, confluentCloudEngine);
@@ -52,10 +63,12 @@ container.registerInstance(ConfluentCloudEngine, confluentCloudEngine);
 
 // Register services
 container.register<IEmailService>('EmailService', { useClass: SendGridEmailService });
-
-container.register(FCMService, { useClass: FCMService });
+container.registerSingleton<PushNotificationService>('PushNotificationService', FCMService);
+container.registerSingleton<ExternalPublishingService>('ExternalPublishingService', FCMService);
+// container.register(FCMService, { useClass: FCMService });
 container.registerSingleton<UserService>(UserService);
 container.register(TopicService, { useClass: TopicService });
+
 
 // Register controllers
 container.register(NotificationController, { useClass: NotificationController });
