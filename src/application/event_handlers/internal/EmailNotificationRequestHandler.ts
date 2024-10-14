@@ -3,6 +3,7 @@ import { InternalEventDefinition, InternalNotificationEvent, InternalNotificatio
 import { IEmailService } from "../../contracts/IEmailService";
 import { NotificationService } from "../../notification/service";
 import { UserService } from "../../user/services/UserService";
+import { logger } from "../../../cross_cutting/logging";
 
 
 @injectable()
@@ -27,11 +28,11 @@ export class EmailNotificationRequestHandler implements InternalNotificationEven
             throw new Error(`User with id ${notification.relatedEntityId} not found`);
         }
         // In a real implementation, this would integrate with an email service
-        console.log(`Sending email to ${user.email} with subject: ${notification.title}`);
+        logger.info(`Sending email to ${user.email} with subject: ${notification.title}`);
         // Simulate sending email
         await this.emailService.sendEmail(user.email, notification.title, notification.content);
         // await new Promise(resolve => setTimeout(resolve, 100));
-        console.log(`Email sent to ${user.email}`);
+        logger.info(`Email sent to ${user.email}`);
         await this.notificationService.markNotificationAsSent(notification.id);
     }
 }

@@ -15,7 +15,7 @@ declare global {
 
 @injectable()
 export class FirebaseAuthMiddleware {
-    constructor(@inject(GetProfileUseCase) private gerProfile:GetProfileUseCase) {
+    constructor(@inject(GetProfileUseCase) private getProfile:GetProfileUseCase) {
     }
 
     public authenticate = async (req: any, res: any, next: any): Promise<void> => {
@@ -24,7 +24,7 @@ export class FirebaseAuthMiddleware {
             if(userInfoHeader) {
                 const userInfo = JSON.parse(Buffer.from(userInfoHeader, 'base64').toString());
                 req.subject = userInfo.sub;
-                const userProfile = await this.gerProfile.execute(userInfoHeader);
+                const userProfile = await this.getProfile.execute(userInfoHeader);
                 if (!userProfile) {
                     res.status(404).json({ error: 'User profile not found' });
                     return;

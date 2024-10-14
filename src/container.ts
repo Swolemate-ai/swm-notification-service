@@ -28,10 +28,10 @@ import { UserRepository } from './domain/user/UserRepository';
 import { FirebaseUserRepository } from './infrastructure/persistence/firebase/FirebaseUserRepository';
 import { NotificationRepository } from './domain/notification';
 import { FirebaseNotificationRepository } from './infrastructure/persistence/firebase/FirebaseNotificationRepository';
-import { register } from 'module';
 import { PushNotificationService } from './application/PushNotificationService';
 import { FCMService } from './infrastructure/messaging/FCMService';
 import { ExternalPublishingService } from './application/ExternalPublishingService';
+import { RedisClient, createRedisClient } from './infrastructure/caching/redis/RedisClient';
 
 // Choose which implementation to use
 // container.registerSingleton<IFileStorageService>('IFileStorageService', S3FileStorageService);
@@ -41,8 +41,7 @@ import { ExternalPublishingService } from './application/ExternalPublishingServi
 
 // Register repositories
 // container.registerSingleton<UserRepository>('UserRepository', MongoUserRepository);
-
-
+container.registerInstance(RedisClient, RedisClient.getInstance());
 // Register services
 // container.registerSingleton<UserService>(UserService);
 container.register<ProfileService>('ProfileService', { useClass: ProfileServiceImpl });
@@ -65,7 +64,6 @@ container.registerInstance(ConfluentCloudEngine, confluentCloudEngine);
 container.register<IEmailService>('EmailService', { useClass: SendGridEmailService });
 container.registerSingleton<PushNotificationService>('PushNotificationService', FCMService);
 container.registerSingleton<ExternalPublishingService>('ExternalPublishingService', FCMService);
-// container.register(FCMService, { useClass: FCMService });
 container.registerSingleton<UserService>(UserService);
 container.register(TopicService, { useClass: TopicService });
 

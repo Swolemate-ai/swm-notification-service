@@ -9,6 +9,11 @@ export const CACHE_CONFIG: RedisOptions = {
   retryStrategy: (times: number) => Math.min(times * 50, 2000),
 };
 
+export const GOOGLE_REDIS_CONFIG: RedisOptions = {
+  host: process.env.REDISHOST || 'localhost',
+  port: parseInt(process.env.REDISPORT || '6379', 10),
+};
+
 export const CACHE_TTL = {
   SHORT: 60 * 5, // 5 minutes
   MEDIUM: 60 * 60, // 1 hour

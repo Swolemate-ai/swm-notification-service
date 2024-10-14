@@ -49,7 +49,8 @@ class Server {
     this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
     // API routes
-    this.app.use(routes);
+    this.app.use(routes)
+    this.app.use('/notification-service', routes);
 
     // Health check route
     this.app.get('/health', (req, res) => {

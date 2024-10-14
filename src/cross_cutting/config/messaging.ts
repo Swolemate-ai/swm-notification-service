@@ -49,3 +49,8 @@ export const kafkaConfig = {
     password: process.env.CONFLUENT_API_SECRET!
   },
 };
+
+export const SendGridConfig = {
+  apiKey: process.env.SENDGRID_API_KEY,
+  verifiedSenderEmail: process.env.SENDGRID_VERIFIED_SENDER_EMAIL,
+};
