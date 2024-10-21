@@ -22,7 +22,7 @@ constructor(@inject(RedisClient) private redisClient: RedisClient) {}
           return JSON.parse(cachedProfile);
         }
 
-        const response = await axios.get(`${EXTERNAL_SERVICES_CONFIG.profileService.url}/user-profile`, {
+        const response = await axios.get(`${EXTERNAL_SERVICES_CONFIG.profileService.url}/user-profiles`, {
           headers: {
             'X-ApiGateway-Api-UserInfo': userInfoHeader, // Add your header here
             // Add any other headers you need
