@@ -4,11 +4,15 @@ import { inject, injectable } from 'tsyringe';
 import { logger } from '../../cross_cutting/logging';
 import { ExternalPublishingService } from '../../application/ExternalPublishingService';
 import { PushNotificationService } from '../../application/PushNotificationService';
+import { getFirestore } from 'firebase-admin/firestore';
 
 
 @injectable()
 export class FCMService implements PushNotificationService, ExternalPublishingService {
-  constructor(@inject("FirebaseApp") private firebaseApp: admin.app.App) {}
+  private firestore: admin.firestore.Firestore;
+  constructor(@inject("FirebaseApp") private firebaseApp: admin.app.App) {
+    this.firestore = getFirestore(firebaseApp, "swm-notifications");
+  }
 
   async sendNotificationToToken(notification: Notification, token: string): Promise<string> {
     try {
@@ -25,7 +29,7 @@ export class FCMService implements PushNotificationService, ExternalPublishingSe
       logger.info(`Successfully sent message: ${response}`);
       
       // Store the notification in Firestore
-      await this.firebaseApp.firestore().collection('notifications').add({
+      await this.firestore.collection('notifications').add({
         ...notification,
         token,
         sentAt: admin.firestore.FieldValue.serverTimestamp(),
@@ -54,7 +58,7 @@ export class FCMService implements PushNotificationService, ExternalPublishingSe
       logger.info(`Successfully sent message to topic: ${response}`);
 
       // Store the notification in Firestore
-      await this.firebaseApp.firestore().collection('notifications').add({
+      await this.firestore.collection('notifications').add({
         ...notification,
         topic,
         sentAt: admin.firestore.FieldValue.serverTimestamp(),
@@ -74,7 +78,7 @@ export class FCMService implements PushNotificationService, ExternalPublishingSe
       logger.info(`Successfully subscribed to topic: ${response.successCount} devices`);
 
       // Update topic subscriber count in Firestore
-      await this.firebaseApp.firestore().collection('topics').doc(topic).update({
+      await this.firestore.collection('topics').doc(topic).update({
         subscriberCount: admin.firestore.FieldValue.increment(response.successCount)
       });
     } catch (error) {
@@ -89,7 +93,7 @@ export class FCMService implements PushNotificationService, ExternalPublishingSe
       logger.info(`Successfully unsubscribed from topic: ${response.successCount} devices`);
 
       // Update topic subscriber count in Firestore
-      await this.firebaseApp.firestore().collection('topics').doc(topic).update({
+      await this.firestore.collection('topics').doc(topic).update({
         subscriberCount: admin.firestore.FieldValue.increment(-response.successCount)
       });
     } catch (error) {

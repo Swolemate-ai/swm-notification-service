@@ -76,11 +76,11 @@ class Server {
       try {
         // Connect to database
 
-        const cloudEngine : ConfluentCloudEngine = container.resolve(ConfluentCloudEngine);
-        await cloudEngine.connect();
+        // const cloudEngine : ConfluentCloudEngine = container.resolve(ConfluentCloudEngine);
+        // await cloudEngine.connect();
 
-        const notificationConsumer: ConfluentCloudConsumer = container.resolve(ConfluentCloudConsumer);
-        await notificationConsumer.start(['profile.registered']);
+        // const notificationConsumer: ConfluentCloudConsumer = container.resolve(ConfluentCloudConsumer);
+        // await notificationConsumer.start(['profile.registered']);
 
         // Start the server
         this.app.listen(APP_CONFIG.port, () => {

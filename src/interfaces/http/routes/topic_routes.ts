@@ -8,8 +8,9 @@ const router = Router();
 const topicController = container.resolve(TopicController);
 
 
-router.post('/topics', topicController.createTopic);
-router.get('/topics/:id', topicController.getTopic);
-router.post('/topics/subscribe', topicController.subscribeToTopic);
+router.post('/', topicController.createTopic);
+router.get('/:id', topicController.getTopic);
+router.post('/subscribe', topicController.subscribeToTopic);
+router.post('/consume', topicController.consumeMessage);
 
 export default router;

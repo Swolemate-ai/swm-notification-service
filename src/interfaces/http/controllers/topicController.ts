@@ -5,12 +5,14 @@ import { TopicService } from '../../../application/topic/services/TopicService';
 import { Topic } from '../../../domain/topic';
 import { logger } from '../../../cross_cutting/logging';
 import { ExternalPublishingService } from '../../../application/ExternalPublishingService';
+import { NotificationEventProcessor } from '../../../domain/notification/NotificationEvent';
 
 
 @injectable()
 export class TopicController {
   constructor(
     @inject(TopicService) private topicService: TopicService,
+    @inject('NotificationEventProcessor') private processor: NotificationEventProcessor,
     @inject('ExternalPublishingService') private publishingService: ExternalPublishingService
   ) {}
 
@@ -59,4 +61,29 @@ export class TopicController {
       res.status(500).json({ error: 'Failed to subscribe to topic' });
     }
   };
+
+  consumeMessage = async (req: Request, res: Response): Promise<void> => {
+    try {
+      if (!req.body || !req.body.message) {
+        logger.error('error', `Bad request: missing message`);
+        res.status(400).send(`Bad request: missing message`);
+        return;
+      }
+
+      const message = req.body.message;
+      const data = message.data ? Buffer.from(message.data, 'base64').toString() : null;
+
+      if (!data) {
+        logger.error('error', `Bad request: missing data`);
+        res.status(400).send(`Bad request: missing data`);
+        return;
+      }
+
+      await this.processor.process(JSON.parse(data));
+      res.status(204).send();
+    } catch (error) {
+      logger.error('Error consuming message:', error);
+      res.status(500).json({ error: 'Failed to consume message' });
+    }
+  }
 }

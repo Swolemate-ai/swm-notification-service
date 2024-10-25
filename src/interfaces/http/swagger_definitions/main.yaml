@@ -6,7 +6,6 @@ info:
 tags:
   - name: Notifications
     description: Operations related to user notifications
-
 paths:
   /users:
     tags: [Notifications]
@@ -104,10 +103,3 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-components:
-  schemas: 
-    User:
-      $ref: './schemas.yaml#/User'
-    Error:
-      $ref: './schemas.yaml#/Error'
-    

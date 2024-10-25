@@ -10,11 +10,22 @@ export class NotificationEventDispatcher implements INotificationEventDispatcher
   ) { }
 
   async dispatch(event: INotificationEvent): Promise<void> {
-    logger.info(`Dispatching event: ${event.eventType}`);
-    // Handle the event internally
-    const relevantHandlers = this.handlers.filter(h => h.eventType === event.eventType);
-    await Promise.all(relevantHandlers.map(handler => handler.handle(event)));
-    logger.info(`External Event Processed Successully : ${event.eventType}`);
+
+    try {
+      logger.info(`Dispatching event: ${event.eventType}`);
+      // Handle the event internally
+      const relevantHandlers = this.handlers.filter(h => h.eventType === event.eventType);
+      if (relevantHandlers.length === 0) {
+        logger.warn(`No handlers found for processing external event/message type: ${event.eventType}`);
+        return;
+      }
+      
+      await Promise.all(relevantHandlers.map(handler => handler.handle(event)));
+
+      logger.info(`External Event Processed Successully : ${event.eventType}`);
+    } catch (error) {
+      logger.error(`Error processing external event/message: ${event.eventType}`, error);
+    }
   }
 }
 
@@ -28,6 +39,12 @@ export class DefaultInternalNotificationEventDispatcher implements InternalNotif
     logger.info(`Dispatching event: ${event.internalEventType}`);
     // Handle the event internally
     const relevantHandlers = this.handlers.filter(h => h.internalEventType === event.internalEventType);
+    
+    if (relevantHandlers.length === 0) {
+      logger.warn(`No handlers found for internal event type: ${event.internalEventType}`);
+      return;
+    }
+    
     await Promise.all(relevantHandlers.map(handler => handler.handle(event)));
     logger.info(`Internal Events handled internally: ${event.internalEventType}`);
   }
